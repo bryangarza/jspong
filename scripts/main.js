@@ -6,6 +6,9 @@ var height = 400;
 var xpadding = 20;
 var moveDistance = 5;
 
+var ballMoveX = -3;
+var ballMoveY = 2;
+
 function stageMap() {
     // create a new instance of a pixi stage
     var stage = new PIXI.Stage(0x66FF99);
@@ -50,6 +53,24 @@ function move (what, amount) {
     }
 }
 
+function moveBall () {
+    var halfheight = player.height / 2;
+    var halfwidth = player.width / 2;
+    if (
+            ball.position.y >= (player.position.y - halfheight) &&
+            ball.position.y <= (player.position.y + halfheight)) {
+                if (
+                        ball.position.x >= (player.position.x - halfwidth) &&
+                        ball.position.x <= (player.position.x + halfwidth)) {
+                            ballMoveX = -ballMoveX;
+                            ballMoveY = -ballMoveY;
+                        }
+            }
+
+    ball.position.x += ballMoveX;
+    ball.position.y += ballMoveY;
+}
+
 function moveUp(e) {
     move(player, - moveDistance);
 }
@@ -73,6 +94,7 @@ function animate() {
 
     // keyboard handler
     kd.tick();
+    moveBall();
     requestAnimFrame( animate );
     renderer.render(stage);
 }
