@@ -54,21 +54,42 @@ function move (what, amount) {
 }
 
 function moveBall () {
-    var halfheight = player.height / 2;
-    var halfwidth = player.width / 2;
+    var m = ball.width / 2;
+
     if (
             ball.position.y >= (player.position.y - halfheight) &&
             ball.position.y <= (player.position.y + halfheight)) {
                 if (
-                        ball.position.x >= (player.position.x - halfwidth) &&
-                        ball.position.x <= (player.position.x + halfwidth)) {
+                        ball.position.x - m >= (xpadding - player.width) &&
+                        ball.position.x - m <= (xpadding + player.width)) {
+                            ball.position.y
                             ballMoveX = -ballMoveX;
-                            ballMoveY = -ballMoveY;
                         }
             }
+    else if (
+            ball.position.y >= (enemy.position.y - halfheight) &&
+            ball.position.y <= (enemy.position.y + halfheight)) {
+                if (
+                        ball.position.x >= (enemy.position.x - halfwidth) &&
+                        ball.position.x <= (enemy.position.x + halfwidth)) {
+                            ballMoveX = -ballMoveX;
+                        }
+            }
+    else if (ball.position.y <= 0 || ball.position.y >= height) {
+        ballMoveY = -ballMoveY;
+    }
 
     ball.position.x += ballMoveX;
     ball.position.y += ballMoveY;
+}
+
+function AI() {
+    if (ball.position.y >= (player.position.y - halfheight)) {
+        move (enemy, -3)
+    }
+    else if (ball.position.y <= (player.position.y + halfheight)) {
+        move (enemy, 3)
+    }
 }
 
 function moveUp(e) {
@@ -87,6 +108,9 @@ var player = stageImage("./blackpaddle.png", xpadding, height / 2);
 var enemy = stageImage("./blackpaddle.png", width - xpadding, height / 2);
 var ball = stageImage("./ball.png", width / 2, height / 2);
 
+var halfheight = player.height / 2;
+var halfwidth = player.width / 2;
+
 kd.UP.down(moveUp);
 kd.DOWN.down(moveDown);
 
@@ -94,6 +118,7 @@ function animate() {
 
     // keyboard handler
     kd.tick();
+    AI();
     moveBall();
     requestAnimFrame( animate );
     renderer.render(stage);
