@@ -59,21 +59,18 @@ function moveBall () {
     if (
             ball.position.y >= (player.position.y - halfheight) &&
             ball.position.y <= (player.position.y + halfheight)) {
-                if (
-                        ball.position.x - m >= (xpadding - player.width) &&
-                        ball.position.x - m <= (xpadding + player.width)) {
-                            ball.position.y
-                            ballMoveX = -ballMoveX;
-                        }
+                if (ball.position.x - m <= fullpad) {
+                    ballMoveX = -ballMoveX;
+                    ball.position.x = fullpad + m;
+                }
             }
     else if (
             ball.position.y >= (enemy.position.y - halfheight) &&
             ball.position.y <= (enemy.position.y + halfheight)) {
-                if (
-                        ball.position.x >= (enemy.position.x - halfwidth) &&
-                        ball.position.x <= (enemy.position.x + halfwidth)) {
-                            ballMoveX = -ballMoveX;
-                        }
+                if (ball.position.x >= (width - fullpad) {
+                    ball.position.x = width - fullpad - m;
+                    ballMoveX = -ballMoveX;
+                }
             }
     else if (ball.position.y <= 0 || ball.position.y >= height) {
         ballMoveY = -ballMoveY;
@@ -104,12 +101,13 @@ var mapObjs = stageMap();
 var stage = mapObjs[0];
 var renderer = mapObjs[1];
 
-var player = stageImage("./blackpaddle.png", xpadding, height / 2);
+var player = stageImage("./blackpaddle.png", xpadding + 10, height / 2);
 var enemy = stageImage("./blackpaddle.png", width - xpadding, height / 2);
 var ball = stageImage("./ball.png", width / 2, height / 2);
 
 var halfheight = player.height / 2;
 var halfwidth = player.width / 2;
+var fullpad = xpadding + halfwidth;
 
 kd.UP.down(moveUp);
 kd.DOWN.down(moveDown);
