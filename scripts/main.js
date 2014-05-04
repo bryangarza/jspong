@@ -28,8 +28,9 @@ function stageImage(file, x, y) {
     //create a new Sprite using the texture
     var image = new PIXI.Sprite(texture);
 
-    image.anchor.x = 0.5;
-    image.anchor.y = 0.5;
+    // these are the default values
+    image.anchor.x = 0;
+    image.anchor.y = 0;
 
     image.position.x = x;
     image.position.y = y;
@@ -39,40 +40,42 @@ function stageImage(file, x, y) {
 }
 
 function move (what, amount) {
-    var edgeTop = what.position.y - 50;
-    var edgeBot = what.position.y + 50;
+    var edgeTop = what.position.y;
+    var edgeBot = what.position.y + what.width;
 
-    if (edgeTop === 0 && amount > 0) {
+    if (edgeTop > 0 || edgeBot < height) {
         what.position.y += amount;
     }
-    else if (edgeBot === height && amount < 0) {
+    else if (edgeTop <= 0 && amount > 0) {
         what.position.y += amount;
     }
-    else if (edgeTop > 0 && edgeBot < height) {
+    else if (edgeBot >= width && amount < 0) {
         what.position.y += amount;
     }
+
 }
 
 function moveBall () {
-    var m = ball.width / 2;
+    // x-coord of right side of ball
+    var br = ball.position.x + ball.width;
 
-    if (
-            ball.position.y >= (player.position.y - halfheight) &&
-            ball.position.y <= (player.position.y + halfheight)) {
-                if (ball.position.x - m <= fullpad) {
-                    ballMoveX = -ballMoveX;
-                    ball.position.x = fullpad + m;
-                }
+    if (ball.position.x + ballMoveX <= player.position.x + player.width) {
+        if (ball.position.y >= player.position.y) {
+            if (ball.position.y + ball.width <= player.position.y + player.height) {
+                ball.position.x = player.position.x + player.width;
+                ballMoveX = -ballMoveX;
             }
-    else if (
-            ball.position.y >= (enemy.position.y - halfheight) &&
-            ball.position.y <= (enemy.position.y + halfheight)) {
-                if (ball.position.x >= (width - fullpad) {
-                    ball.position.x = width - fullpad - m;
-                    ballMoveX = -ballMoveX;
-                }
+        }
+    }
+    if (br + ballMoveX >= enemy.position.x) {
+        if (ball.position.y >= enemy.position.y) {
+            if (ball.position.y + ball.width <= enemy.position.y + enemy.height) {
+                ball.position.x = enemy.position.x - ball.width;
+                ballMoveX = -ballMoveX;
             }
-    else if (ball.position.y <= 0 || ball.position.y >= height) {
+        }
+    }
+    else if (ball.position.y <= 0 || ball.position.y >= height - ball.width) {
         ballMoveY = -ballMoveY;
     }
 
@@ -81,11 +84,13 @@ function moveBall () {
 }
 
 function AI() {
-    if (ball.position.y >= (player.position.y - halfheight)) {
-        move (enemy, -3)
+    m = enemy.width / 2;
+
+    if (ball.position.y <= enemy.position.y + m) {
+        move (enemy, -5)
     }
-    else if (ball.position.y <= (player.position.y + halfheight)) {
-        move (enemy, 3)
+    else if (ball.position.y >= enemy.position.y + m) {
+        move (enemy, 5)
     }
 }
 
@@ -101,13 +106,9 @@ var mapObjs = stageMap();
 var stage = mapObjs[0];
 var renderer = mapObjs[1];
 
-var player = stageImage("./blackpaddle.png", xpadding + 10, height / 2);
-var enemy = stageImage("./blackpaddle.png", width - xpadding, height / 2);
+var player = stageImage("./blackpaddle.png", xpadding, height / 2);
+var enemy = stageImage("./blackpaddle.png", width - xpadding - 20, height / 2);
 var ball = stageImage("./ball.png", width / 2, height / 2);
-
-var halfheight = player.height / 2;
-var halfwidth = player.width / 2;
-var fullpad = xpadding + halfwidth;
 
 kd.UP.down(moveUp);
 kd.DOWN.down(moveDown);
