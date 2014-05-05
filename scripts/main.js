@@ -40,19 +40,14 @@ function stageImage(file, x, y) {
 }
 
 function move (what, amount) {
-    var edgeTop = what.position.y;
-    var edgeBot = what.position.y + what.width;
+    var y = what.position.y;
 
-    if (edgeTop > 0 || edgeBot < height) {
-        what.position.y += amount;
-    }
-    else if (edgeTop <= 0 && amount > 0) {
-        what.position.y += amount;
-    }
-    else if (edgeBot >= width && amount < 0) {
-        what.position.y += amount;
+    // if position of paddle is at top or bottom
+    if ((y <= 0 && amount < 0) || (y + what.height >= height && amount > 0)) {
+        amount = 0;
     }
 
+    what.position.y += amount;
 }
 
 function moveBall () {
