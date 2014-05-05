@@ -54,8 +54,11 @@ function moveBall () {
     // x-coord of right side of ball
     var br = ball.position.x + ball.width;
 
+    // if moving the ball more will take it past the right side of the paddle
     if (ball.position.x + ballMoveX <= player.position.x + player.width) {
+        // if ball is at or below top edge of paddle
         if (ball.position.y >= player.position.y) {
+            // if ball bot edge is at or above bot edge of paddle
             if (ball.position.y + ball.width <= player.position.y + player.height) {
                 ball.position.x = player.position.x + player.width;
                 ballMoveX = -ballMoveX;
@@ -70,6 +73,7 @@ function moveBall () {
             }
         }
     }
+    // top / bot edge, reverse y direction
     else if (ball.position.y <= 0 || ball.position.y >= height - ball.width) {
         ballMoveY = -ballMoveY;
     }
@@ -81,9 +85,11 @@ function moveBall () {
 function AI() {
     m = enemy.width / 2;
 
+    // move down if ball is above center of paddle
     if (ball.position.y <= enemy.position.y + m) {
         move (enemy, -5)
     }
+    // move up if ball is below center of paddle
     else if (ball.position.y >= enemy.position.y + m) {
         move (enemy, 5)
     }
@@ -102,6 +108,7 @@ var stage = mapObjs[0];
 var renderer = mapObjs[1];
 
 var player = stageImage("./blackpaddle.png", xpadding, height / 2);
+// 20 is the width of this specific paddle img
 var enemy = stageImage("./blackpaddle.png", width - xpadding - 20, height / 2);
 var ball = stageImage("./ball.png", width / 2, height / 2);
 
